@@ -1,0 +1,104 @@
+body {
+    background-color: #2C5F34;
+    margin: 0px;
+    padding: 10px;
+    border: 30px solid rgb(226, 226, 12);
+    border-radius: 20px;
+    font-family: "Patrick Hand", "cursive";
+}
+
+h1 {
+    color: yellow;
+    text-decoration: underline;
+    margin-left: 15px;
+
+}
+
+h2 {
+    color: rgb(226, 226, 12);
+    text-decoration: underline;
+    
+}
+
+h3 {
+    color: rgb(214, 214, 80);
+    text-decoration: underline;
+}
+
+h4 {
+    color: rgb(197, 197, 22);
+    text-decoration: underline;
+}
+
+p {
+    width: 85%;
+    line-height: 1.4;
+    color: rgb(229, 229, 85);
+}
+
+a {
+    color: rgb(229, 229, 85);
+}
+
+a:hover {
+    color: rgb(220, 220, 55)
+}
+
+
+figure {
+    display: inline-block;
+    width: fit-content;
+    vertical-align: top;
+    margin: 10px;
+    color: rgb(229, 229, 85);
+    text-decoration: underline;
+    border: 10px solid rgb(214, 214, 18);
+    padding: 20px;
+    margin-right: 20%;
+    border-radius: 10px;
+}
+
+figure img {
+    display: block;
+    width: auto;
+    max-width: 100%;
+}
+
+div {
+    border: 10px solid yellow;
+    border-radius: 10px;
+    padding: 10px;
+    margin: 15px
+}
+
+img {
+    width: 35%;
+}
+
+button {
+    color: #2C5F34;
+    background-color: yellow;
+    margin: 0 15px 15px 15px;
+    width: 100px;
+    height: 35px;
+    border-radius: 10px;
+    border: none;
+    font-family: "Patrick Hand", "cursive";
+    font-weight: bold;
+    font-size: 17px;
+    
+}
+
+button:hover {
+    background-color: rgb(204, 204, 17);
+    cursor: pointer;
+    width: 105px;
+    height: 37px;
+
+}
+
+
+
+div h1 {
+    margin: 0;
+}
