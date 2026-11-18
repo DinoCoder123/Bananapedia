@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banana Catcher - Bananapedia</title>
+    <link rel="stylesheet" href="bananas.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
+    <style>
+        body.game-page {
+            min-height: 100vh;
+            box-sizing: border-box;
+            margin: 0;
+            padding: 28px 20px;
+            border: 0;
+            border-radius: 0;
+            background:
+                radial-gradient(ellipse at 50% 0, rgba(151, 196, 74, .22), transparent 50%),
+                #173d2b;
+            color: #fff9d6;
+            font-family: "Patrick Hand", cursive;
+        }
+
+        .game-page *,
+        .game-page *::before,
+        .game-page *::after {
+            box-sizing: border-box;
+        }
+
+        .game-page .game-shell {
+            width: min(100%, 900px);
+            margin: 0 auto;
+        }
+
+        .game-page .topline {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 22px;
+        }
+
+        .game-page .home-link {
+            color: #f5e86a;
+            font-size: 19px;
+            text-decoration: none;
+        }
+
+        .game-page .home-link:hover {
+            color: #fff6a2;
+            text-decoration: underline;
+        }
+
+        .game-page h1 {
+            margin: 0;
+            color: #ffe96b;
+            font-size: clamp(36px, 7vw, 58px);
+            line-height: 1;
+            text-align: center;
+            text-decoration: none;
+            text-shadow: 0 3px 0 #9c7628;
+        }
+
+        .game-page .subtitle {
+            width: auto;
+            margin: 9px 0 20px;
+            color: #d7e8ba;
+            font-size: 19px;
+            text-align: center;
+        }
+
+        .game-page .scoreboard {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .game-page .score-card {
+            min-width: 115px;
+            padding: 7px 18px;
+            border: 1px solid rgba(255, 237, 129, .35);
+            border-radius: 14px;
+            background: rgba(13, 45, 31, .75);
+            text-align: center;
+        }
+
+        .game-page .score-label {
+            display: block;
+            color: #d4e4c2;
+            font-size: 15px;
+            line-height: 1.1;
+        }
+
+        .game-page .score-value {
+            display: block;
+            color: #ffe96b;
+            font-size: 27px;
+            line-height: 1.15;
+        }
+
+        .game-page .stage {
+            position: relative;
+            overflow: hidden;
+            border: 4px solid #e8c94e;
+            border-radius: 20px;
+            background: #75bf72;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, .28);
+        }
+
+        .game-page canvas {
+            display: block;
+            width: 100%;
+            aspect-ratio: 760 / 420;
+            touch-action: none;
+        }
+
+        .game-page .overlay {
+            position: absolute;
+            inset: 0;
+            display: grid;
+            place-content: center;
+            justify-items: center;
+            padding: 20px;
+            background: rgba(16, 49, 33, .77);
+            text-align: center;
+        }
+
+        .game-page .overlay[hidden] {
+            display: none;
+        }
+
+        .game-page .overlay h2 {
+            margin: 0 0 6px;
+            color: #ffe96b;
+            font-size: clamp(30px, 6vw, 46px);
+            text-decoration: none;
+        }
+
+        .game-page .overlay p {
+            width: auto;
+            max-width: 380px;
+            margin: 0 0 17px;
+            color: #fff9d6;
+            font-size: 19px;
+        }
+
+        .game-page button {
+            width: auto;
+            min-height: 44px;
+            height: auto;
+            margin: 0;
+            padding: 8px 23px;
+            border: 2px solid #fff3a4;
+            border-radius: 12px;
+            background: #ffe45c;
+            color: #21442a;
+            font: inherit;
+            font-size: 20px;
+            font-weight: bold;
+            transition: transform .12s, background-color .12s;
+        }
+
+        .game-page button:hover {
+            width: auto;
+            height: auto;
+            background: #fff092;
+            transform: translateY(-2px);
+            cursor: pointer;
+        }
+
+        .game-page button:focus-visible,
+        .game-page a:focus-visible {
+            outline: 3px solid #fff;
+            outline-offset: 3px;
+        }
+
+        .game-page .controls {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin: 13px 2px 18px;
+            color: #d7e8ba;
+            font-size: 17px;
+        }
+
+        .game-page .touch-controls {
+            display: flex;
+            gap: 8px;
+        }
+
+        .game-page .touch-controls button {
+            min-width: 48px;
+            padding: 5px 13px;
+            font-size: 22px;
+        }
+
+        .game-page .legend {
+            padding: 16px 18px;
+            border: 1px solid rgba(255, 237, 129, .25);
+            border-radius: 16px;
+            background: rgba(13, 45, 31, .65);
+        }
+
+        .game-page .legend h2 {
+            margin: 0 0 10px;
+            color: #ffe96b;
+            font-size: 24px;
+            text-decoration: none;
+        }
+
+        .game-page .banana-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(135px, 1fr));
+            gap: 8px 14px;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .game-page .banana-list li {
+            color: #f2f0d1;
+            font-size: 17px;
+        }
+
+        .game-page .banana-list strong {
+            color: #ffe96b;
+        }
+
+        @media (max-width: 520px) {
+            body.game-page {
+                padding: 20px 12px;
+            }
+
+            .game-page .topline {
+                margin-bottom: 18px;
+            }
+
+            .game-page .home-link {
+                font-size: 16px;
+            }
+
+            .game-page .controls {
+                align-items: flex-start;
+                font-size: 15px;
+            }
+
+            .game-page .touch-controls {
+                flex-shrink: 0;
+            }
+        }
+    </style>
+</head>
+
+<body class="game-page">
+    <main class="game-shell">
+        <div class="topline">
+            <a class="home-link" href="index.html">&larr; Home</a>
+            <span aria-hidden="true">🍌</span>
+        </div>
+        <h1>Banana Catcher</h1>
+        <p class="subtitle">Catch the falling bananas. Watch out for the rare ones!</p>
+
+        <section class="scoreboard" aria-label="Game stats">
+            <div class="score-card">
+                <span class="score-label">SCORE</span>
+                <span class="score-value" id="score" aria-live="polite">0</span>
+            </div>
+            <div class="score-card">
+                <span class="score-label">LIVES</span>
+                <span class="score-value" id="lives" aria-live="polite">❤️❤️❤️</span>
+            </div>
+        </section>
+
+        <section class="stage" aria-label="Banana catching game">
+            <canvas id="game-canvas" width="760" height="420" aria-label="Game field. Move the bucket to catch falling bananas."></canvas>
+            <div class="overlay" id="overlay">
+                <h2 id="overlay-title">Ready to catch?</h2>
+                <p id="overlay-message">Move your bucket and catch as many bananas as you can!</p>
+                <button id="start-button" type="button">Start game</button>
+            </div>
+        </section>
+
+        <div class="controls">
+            <span>Move with <strong>&larr; &rarr;</strong> or <strong>A / D</strong>. On a phone, drag the bucket or use the buttons.</span>
+            <div class="touch-controls" aria-label="Touch controls">
+                <button id="left-button" type="button" aria-label="Move bucket left">&larr;</button>
+                <button id="right-button" type="button" aria-label="Move bucket right">&rarr;</button>
+            </div>
+        </div>
+
+        <section class="legend" aria-labelledby="banana-values-heading">
+            <h2 id="banana-values-heading">Banana points</h2>
+            <ul class="banana-list">
+                <li>🍌 Banana <strong>+5</strong></li>
+                <li>🌟 Golden banana <strong>+10</strong></li>
+                <li>💚 Emerald banana <strong>+15</strong></li>
+                <li>💎 Diamond banana <strong>+20</strong></li>
+                <li>🌈 Rainbow banana <strong>+25</strong></li>
+                <li>🔥 Tuff banana <strong>+30</strong></li>
+            </ul>
+        </section>
+    </main>
+
+    <script>
+        (() => {
+            const canvas = document.getElementById("game-canvas");
+            const ctx = canvas.getContext("2d");
+            const scoreDisplay = document.getElementById("score");
+            const livesDisplay = document.getElementById("lives");
+            const overlay = document.getElementById("overlay");
+            const overlayTitle = document.getElementById("overlay-title");
+            const overlayMessage = document.getElementById("overlay-message");
+            const startButton = document.getElementById("start-button");
+            const width = 760;
+            const height = 420;
+            const basket = { x: width / 2, y: height - 46, width: 100, height: 48, speed: 440 };
+            const bananaTypes = [
+                { name: "Banana", points: 5, color: "#ffe45c", chance: 58, emoji: "🍌" },
+                { name: "Golden", points: 10, color: "#ffbf24", chance: 13, emoji: "🍌" },
+                { name: "Emerald", points: 15, color: "#54e58a", chance: 10, emoji: "🍌" },
+                { name: "Diamond", points: 20, color: "#76e5ff", chance: 8, emoji: "🍌" },
+                { name: "Rainbow", points: 25, color: "#e795ff", chance: 7, emoji: "🍌" },
+                { name: "Tuff", points: 30, color: "#ff795e", chance: 4, emoji: "🍌" }
+            ];
+            let bananas = [];
+            let score = 0;
+            let lives = 3;
+            let state = "ready";
+            let lastTime = 0;
+            let spawnTimer = 0;
+            let elapsed = 0;
+            let moveDirection = 0;
+            let pointerIsDown = false;
+
+            function resizeCanvas() {
+                const rect = canvas.getBoundingClientRect();
+                const pixelRatio = window.devicePixelRatio || 1;
+                canvas.width = Math.round(rect.width * pixelRatio);
+                canvas.height = Math.round(rect.height * pixelRatio);
+                ctx.setTransform(canvas.width / width, 0, 0, canvas.height / height, 0, 0);
+                draw();
+            }
+
+            function chooseBananaType() {
+                const roll = Math.random() * 100;
+                let total = 0;
+                for (const type of bananaTypes) {
+                    total += type.chance;
+                    if (roll < total) return type;
+                }
+                return bananaTypes[0];
+            }
+
+            function spawnBanana() {
+                const type = chooseBananaType();
+                bananas.push({
+                    x: 28 + Math.random() * (width - 56),
+                    y: -25,
+                    speed: 125 + Math.random() * 35 + Math.min(elapsed * 2.2, 145),
+                    type
+                });
+            }
+
+            function setScore(value) {
+                score = value;
+                scoreDisplay.textContent = score;
+            }
+
+            function setLives(value) {
+                lives = value;
+                livesDisplay.textContent = "❤️".repeat(lives) + "🖤".repeat(3 - lives);
+            }
+
+            function startGame() {
+                bananas = [];
+                elapsed = 0;
+                spawnTimer = 0;
+                moveDirection = 0;
+                basket.x = width / 2;
+                setScore(0);
+                setLives(3);
+                state = "playing";
+                overlay.hidden = true;
+                lastTime = performance.now();
+            }
+
+            function endGame() {
+                state = "over";
+                overlayTitle.textContent = "Game over!";
+                overlayMessage.textContent = `You scored ${score} points. Ready for another round?`;
+                startButton.textContent = "Play again";
+                overlay.hidden = false;
+            }
+
+            function moveBasketTo(clientX) {
+                const rect = canvas.getBoundingClientRect();
+                basket.x = Math.max(basket.width / 2, Math.min(width - basket.width / 2,
+                    ((clientX - rect.left) / rect.width) * width));
+            }
+
+            function drawBackground() {
+                const sky = ctx.createLinearGradient(0, 0, 0, height);
+                sky.addColorStop(0, "#83d48a");
+                sky.addColorStop(1, "#b2df83");
+                ctx.fillStyle = sky;
+                ctx.fillRect(0, 0, width, height);
+
+                ctx.fillStyle = "rgba(255, 244, 154, .7)";
+                ctx.beginPath();
+                ctx.arc(660, 70, 31, 0, Math.PI * 2);
+                ctx.fill();
+
+                ctx.fillStyle = "#69b873";
+                ctx.beginPath();
+                ctx.ellipse(135, 340, 235, 78, 0, 0, Math.PI * 2);
+                ctx.ellipse(655, 350, 260, 100, 0, 0, Math.PI * 2);
+                ctx.fill();
+
+                ctx.fillStyle = "#43885a";
+                ctx.fillRect(0, height - 13, width, 13);
+            }
+
+            function drawBanana(banana) {
+                const { type, x, y } = banana;
+                ctx.save();
+                ctx.shadowColor = type.color;
+                ctx.shadowBlur = type.name === "Banana" ? 0 : 17;
+                ctx.font = "36px 'Apple Color Emoji', 'Segoe UI Emoji', sans-serif";
+                ctx.textAlign = "center";
+                ctx.textBaseline = "middle";
+                ctx.fillText(type.emoji, x, y);
+                ctx.restore();
+
+                if (type.name !== "Banana") {
+                    ctx.font = "bold 11px 'Patrick Hand', sans-serif";
+                    ctx.textAlign = "center";
+                    ctx.textBaseline = "middle";
+                    const labelWidth = type.name.length * 7 + 12;
+                    ctx.fillStyle = "rgba(25, 55, 37, .82)";
+                    ctx.beginPath();
+                    ctx.roundRect(x - labelWidth / 2, y + 20, labelWidth, 17, 7);
+                    ctx.fill();
+                    ctx.fillStyle = type.color;
+                    ctx.fillText(type.name, x, y + 28);
+                }
+            }
+
+            function drawBasket() {
+                const x = basket.x;
+                const y = basket.y;
+                const left = x - basket.width / 2;
+                const right = x + basket.width / 2;
+                const body = ctx.createLinearGradient(left, y, right, y + basket.height);
+                body.addColorStop(0, "#c77b32");
+                body.addColorStop(.5, "#a95d26");
+                body.addColorStop(1, "#80421f");
+
+                ctx.fillStyle = body;
+                ctx.beginPath();
+                ctx.moveTo(left + 8, y + 6);
+                ctx.lineTo(right - 8, y + 6);
+                ctx.lineTo(right - 19, y + basket.height);
+                ctx.lineTo(left + 19, y + basket.height);
+                ctx.closePath();
+                ctx.fill();
+
+                ctx.strokeStyle = "#f3ca69";
+                ctx.lineWidth = 6;
+                ctx.lineCap = "round";
+                ctx.beginPath();
+                ctx.moveTo(left + 5, y + 7);
+                ctx.lineTo(right - 5, y + 7);
+                ctx.stroke();
+
+                ctx.strokeStyle = "rgba(255, 224, 153, .62)";
+                ctx.lineWidth = 3;
+                for (let stripe = -1; stripe <= 1; stripe++) {
+                    const stripeX = x + stripe * 24;
+                    ctx.beginPath();
+                    ctx.moveTo(stripeX - 7, y + 13);
+                    ctx.lineTo(stripeX - 4, y + basket.height - 2);
+                    ctx.stroke();
+                }
+            }
+
+            function draw() {
+                if (!ctx) return;
+                ctx.clearRect(0, 0, width, height);
+                drawBackground();
+                bananas.forEach(drawBanana);
+                drawBasket();
+            }
+
+            function update(delta) {
+                if (state !== "playing") return;
+                elapsed += delta;
+                basket.x += moveDirection * basket.speed * delta;
+                basket.x = Math.max(basket.width / 2, Math.min(width - basket.width / 2, basket.x));
+
+                spawnTimer += delta;
+                const spawnInterval = Math.max(.38, .92 - elapsed * .008);
+                while (spawnTimer >= spawnInterval) {
+                    spawnTimer -= spawnInterval;
+                    spawnBanana();
+                }
+
+                for (let index = bananas.length - 1; index >= 0; index--) {
+                    const banana = bananas[index];
+                    banana.y += banana.speed * delta;
+
+                    const basketTop = basket.y + 4;
+                    if (banana.y >= basketTop && banana.y <= basket.y + basket.height
+                        && Math.abs(banana.x - basket.x) < basket.width / 2 + 5) {
+                        setScore(score + banana.type.points);
+                        bananas.splice(index, 1);
+                    } else if (banana.y > height + 24) {
+                        bananas.splice(index, 1);
+                        setLives(lives - 1);
+                        if (lives === 0) {
+                            endGame();
+                            break;
+                        }
+                    }
+                }
+            }
+
+            function frame(timestamp) {
+                const delta = Math.min((timestamp - lastTime) / 1000, .05);
+                lastTime = timestamp;
+                update(delta);
+                draw();
+                requestAnimationFrame(frame);
+            }
+
+            startButton.addEventListener("click", startGame);
+            canvas.addEventListener("pointerdown", event => {
+                pointerIsDown = true;
+                canvas.setPointerCapture(event.pointerId);
+                moveBasketTo(event.clientX);
+            });
+            canvas.addEventListener("pointermove", event => {
+                if (pointerIsDown) moveBasketTo(event.clientX);
+            });
+            canvas.addEventListener("pointerup", () => { pointerIsDown = false; });
+            canvas.addEventListener("pointercancel", () => { pointerIsDown = false; });
+
+            document.addEventListener("keydown", event => {
+                if (event.key === "ArrowLeft" || event.key.toLowerCase() === "a") {
+                    moveDirection = -1;
+                    if (event.key.startsWith("Arrow")) event.preventDefault();
+                } else if (event.key === "ArrowRight" || event.key.toLowerCase() === "d") {
+                    moveDirection = 1;
+                    if (event.key.startsWith("Arrow")) event.preventDefault();
+                }
+            });
+            document.addEventListener("keyup", event => {
+                if ((event.key === "ArrowLeft" || event.key.toLowerCase() === "a") && moveDirection < 0) {
+                    moveDirection = 0;
+                } else if ((event.key === "ArrowRight" || event.key.toLowerCase() === "d") && moveDirection > 0) {
+                    moveDirection = 0;
+                }
+            });
+
+            function pressDirection(direction) {
+                moveDirection = direction;
+            }
+
+            document.getElementById("left-button").addEventListener("pointerdown", event => {
+                event.preventDefault();
+                pressDirection(-1);
+            });
+            document.getElementById("right-button").addEventListener("pointerdown", event => {
+                event.preventDefault();
+                pressDirection(1);
+            });
+            document.addEventListener("pointerup", () => { moveDirection = 0; });
+            document.addEventListener("pointercancel", () => { moveDirection = 0; });
+
+            window.addEventListener("resize", resizeCanvas);
+            resizeCanvas();
+            requestAnimationFrame(frame);
+        })();
+    </script>
+</body>
+
+</html>
