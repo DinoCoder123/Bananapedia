@@ -40,7 +40,7 @@
         }
 
         .game-page .game-shell {
-            width: min(100%, 900px);
+            width: min(100%, 1120px);
             margin: 0 auto;
         }
 
@@ -115,14 +115,14 @@
             position: relative;
             overflow: hidden;
             border: 4px solid rgb(226, 226, 12);
-            border-radius: 20px;
+            border-radius: 12px;
             background: #75bf72;
         }
 
         .game-page canvas {
             display: block;
             width: 100%;
-            aspect-ratio: 760 / 420;
+            aspect-ratio: 960 / 540;
             touch-action: none;
         }
 
@@ -280,13 +280,13 @@
                 <span class="score-value" id="score" aria-live="polite">0</span>
             </div>
             <div class="score-card">
-            <span class="score-label">TIME</span>
-            <span class="score-value" id="timer" aria-live="polite">30</span>
+                <span class="score-label">TIME</span>
+                <span class="score-value" id="timer" aria-live="polite">30</span>
             </div>
         </section>
 
         <section class="stage" aria-label="Banana catching game">
-            <canvas id="game-canvas" width="760" height="420" aria-label="Game field. Move the bucket to catch falling bananas."></canvas>
+            <canvas id="game-canvas" width="960" height="540" aria-label="Game field. Move the bucket to catch falling bananas."></canvas>
             <div class="overlay" id="overlay">
                 <h2 id="overlay-title">Ready to catch?</h2>
                 <p id="overlay-message">You have 30 seconds to catch bananas and rack up points!</p>
@@ -325,19 +325,20 @@
             const overlayTitle = document.getElementById("overlay-title");
             const overlayMessage = document.getElementById("overlay-message");
             const startButton = document.getElementById("start-button");
-            const width = 760;
-            const height = 420;
+            const width = 960;
+            const height = 540;
             const roundLength = 30;
-            const basket = { x: width / 2, y: height - 46, width: 100, height: 48, speed: 440 };
+            const basket = { x: width / 2, y: height - 110, width: 178, height: 100, speed: 560 };
             const bananaTypes = [
-                { name: "Banana", points: 5, color: "#ffe45c", chance: 58, emoji: "🍌" },
-                { name: "Golden", points: 10, color: "#ffbf24", chance: 13, emoji: "🍌" },
-                { name: "Emerald", points: 15, color: "#54e58a", chance: 10, emoji: "🍌" },
-                { name: "Diamond", points: 20, color: "#76e5ff", chance: 8, emoji: "🍌" },
-                { name: "Rainbow", points: 25, color: "#e795ff", chance: 7, emoji: "🍌" },
-                { name: "Tuff", points: 30, color: "#ff795e", chance: 4, emoji: "🍌" }
+                { name: "Banana", points: 5, color: "#ffe45c", highlight: "#fff3a6", outline: "#9b741d", chance: 58 },
+                { name: "Golden", points: 10, color: "#ffb719", highlight: "#ffe98a", outline: "#a56708", chance: 13 },
+                { name: "Emerald", points: 15, color: "#42d17c", highlight: "#a0ffc1", outline: "#147243", chance: 10 },
+                { name: "Diamond", points: 20, color: "#58cbed", highlight: "#d0f8ff", outline: "#28799b", chance: 8 },
+                { name: "Rainbow", points: 25, color: "#f16bdb", highlight: "#fff1a1", outline: "#853f9e", chance: 7 },
+                { name: "Tuff", points: 30, color: "#ff684f", highlight: "#ffc27d", outline: "#8a2929", chance: 4 }
             ];
             let bananas = [];
+            let caughtTypes = [];
             let score = 0;
             let state = "ready";
             let lastTime = 0;
@@ -368,10 +369,11 @@
             function spawnBanana() {
                 const type = chooseBananaType();
                 bananas.push({
-                    x: 28 + Math.random() * (width - 56),
-                    y: -25,
+                    x: 38 + Math.random() * (width - 76),
+                    y: -38,
                     speed: 125 + Math.random() * 35 + Math.min(elapsed * 2.2, 145),
-                    type
+                    type,
+                    wobble: Math.random() * Math.PI * 2
                 });
             }
 
@@ -382,6 +384,7 @@
 
             function startGame() {
                 bananas = [];
+                caughtTypes = [];
                 elapsed = 0;
                 spawnTimer = 0;
                 moveDirection = 0;
@@ -429,32 +432,107 @@
                 ctx.fillRect(0, height - 13, width, 13);
             }
 
-            function drawBanana(banana) {
-                const { type, x, y } = banana;
+            function drawFruit(type, x, y, scale, rotation) {
                 ctx.save();
+                ctx.translate(x, y);
+                ctx.rotate(rotation || 0);
+                ctx.scale(scale, scale);
                 ctx.shadowColor = type.color;
                 ctx.shadowBlur = type.name === "Banana" ? 0 : 17;
-                ctx.font = "36px 'Apple Color Emoji', 'Segoe UI Emoji', sans-serif";
-                ctx.textAlign = "center";
-                ctx.textBaseline = "middle";
-                ctx.fillText(type.emoji, x, y);
-                ctx.restore();
+                const skin = ctx.createLinearGradient(-24, -23, 22, 24);
+                skin.addColorStop(0, type.name === "Rainbow" ? "#ff638e" : type.color);
+                skin.addColorStop(.55, type.name === "Rainbow" ? "#ffe767" : type.highlight);
+                skin.addColorStop(1, type.name === "Rainbow" ? "#7f8fff" : type.color);
+                ctx.fillStyle = skin;
+                ctx.strokeStyle = type.outline;
+                ctx.lineWidth = 2.5;
+                ctx.lineJoin = "round";
+                ctx.beginPath();
+                ctx.moveTo(-14, -23);
+                ctx.lineTo(-7, -28);
+                ctx.quadraticCurveTo(-10, -15, -22, -6);
+                ctx.quadraticCurveTo(-29, 8, -18, 19);
+                ctx.quadraticCurveTo(-4, 31, 14, 22);
+                ctx.quadraticCurveTo(23, 17, 27, 7);
+                ctx.lineTo(21, 8);
+                ctx.quadraticCurveTo(12, 19, 2, 16);
+                ctx.quadraticCurveTo(-11, 14, -13, 5);
+                ctx.quadraticCurveTo(-15, -4, -5, -12);
+                ctx.quadraticCurveTo(6, -21, 18, -21);
+                ctx.lineTo(14, -27);
+                ctx.quadraticCurveTo(0, -29, -14, -23);
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+                ctx.shadowBlur = 0;
 
-                if (type.name !== "Banana") {
-                    ctx.font = "bold 11px 'Patrick Hand', sans-serif";
+                ctx.strokeStyle = "rgba(255,255,255,.55)";
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(-17, -4);
+                ctx.quadraticCurveTo(-18, 8, -8, 15);
+                ctx.stroke();
+
+                if (type.name === "Diamond" || type.name === "Emerald") {
+                    ctx.fillStyle = "rgba(255,255,255,.66)";
+                    ctx.beginPath();
+                    ctx.moveTo(2, -7);
+                    ctx.lineTo(12, -3);
+                    ctx.lineTo(7, 7);
+                    ctx.closePath();
+                    ctx.fill();
+                    ctx.fillStyle = "rgba(0,0,0,.14)";
+                    ctx.beginPath();
+                    ctx.moveTo(12, -3);
+                    ctx.lineTo(19, 0);
+                    ctx.lineTo(7, 7);
+                    ctx.closePath();
+                    ctx.fill();
+                } else if (type.name === "Tuff") {
+                    ctx.fillStyle = type.outline;
+                    for (let spike = 0; spike < 3; spike++) {
+                        const spikeX = -8 + spike * 12;
+                        ctx.beginPath();
+                        ctx.moveTo(spikeX - 4, -19 + spike * 2);
+                        ctx.lineTo(spikeX, -29 + spike * 2);
+                        ctx.lineTo(spikeX + 4, -18 + spike * 2);
+                        ctx.fill();
+                    }
+                } else if (type.name === "Golden" || type.name === "Rainbow") {
+                    ctx.fillStyle = "#fff8c4";
+                    ctx.beginPath();
+                    ctx.arc(5, -13, 2, 0, Math.PI * 2);
+                    ctx.arc(15, 2, 1.7, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+
+                ctx.fillStyle = "#70421f";
+                ctx.beginPath();
+                ctx.roundRect(-17, -27, 9, 6, 2);
+                ctx.fill();
+                ctx.restore();
+            }
+
+            function drawBanana(banana) {
+                const { type, x, y } = banana;
+                const scale = banana.caught ? Math.max(.25, 1 - banana.catchTime * 2.5) : 1;
+                const wobble = Math.sin(elapsed * 5 + banana.wobble) * .12;
+                drawFruit(type, x, y, scale, wobble);
+                if (!banana.caught && type.name !== "Banana") {
+                    ctx.font = "bold 14px 'Patrick Hand', sans-serif";
                     ctx.textAlign = "center";
                     ctx.textBaseline = "middle";
-                    const labelWidth = type.name.length * 7 + 12;
-                    ctx.fillStyle = "rgba(25, 55, 37, .82)";
+                    const labelWidth = type.name.length * 8 + 14;
+                    ctx.fillStyle = "rgba(35, 78, 45, .92)";
                     ctx.beginPath();
-                    ctx.roundRect(x - labelWidth / 2, y + 20, labelWidth, 17, 7);
+                    ctx.roundRect(x - labelWidth / 2, y + 31, labelWidth, 19, 8);
                     ctx.fill();
-                    ctx.fillStyle = type.color;
-                    ctx.fillText(type.name, x, y + 28);
+                    ctx.fillStyle = type.highlight;
+                    ctx.fillText(type.name, x, y + 40);
                 }
             }
 
-            function drawBasket() {
+            function drawBasketBody() {
                 const x = basket.x;
                 const y = basket.y;
                 const left = x - basket.width / 2;
@@ -466,38 +544,66 @@
 
                 ctx.fillStyle = body;
                 ctx.beginPath();
-                ctx.moveTo(left + 8, y + 6);
-                ctx.lineTo(right - 8, y + 6);
-                ctx.lineTo(right - 19, y + basket.height);
-                ctx.lineTo(left + 19, y + basket.height);
+                ctx.moveTo(left + 5, y + 9);
+                ctx.lineTo(right - 5, y + 9);
+                ctx.lineTo(right - 25, y + basket.height);
+                ctx.lineTo(left + 25, y + basket.height);
                 ctx.closePath();
                 ctx.fill();
+            }
 
+            function drawBasketContents() {
+                const columns = 4;
+                const spacing = 34;
+                caughtTypes.slice(-12).forEach((type, index) => {
+                    const row = Math.floor(index / columns);
+                    const column = index % columns;
+                    const x = basket.x + (column - 1.5) * spacing;
+                    const y = basket.y + basket.height - 19 - row * 22;
+                    drawFruit(type, x, y, .48, 0);
+                });
+            }
+
+            function drawBasketDetails() {
+                const x = basket.x;
+                const y = basket.y;
+                const left = x - basket.width / 2;
+                const right = x + basket.width / 2;
                 ctx.strokeStyle = "#f3ca69";
-                ctx.lineWidth = 6;
+                ctx.lineWidth = 11;
                 ctx.lineCap = "round";
                 ctx.beginPath();
-                ctx.moveTo(left + 5, y + 7);
-                ctx.lineTo(right - 5, y + 7);
+                ctx.moveTo(left + 4, y + 8);
+                ctx.lineTo(right - 4, y + 8);
                 ctx.stroke();
 
                 ctx.strokeStyle = "rgba(255, 224, 153, .62)";
+                ctx.lineWidth = 4;
+                ctx.beginPath();
+                ctx.moveTo(left + 20, y + 23);
+                ctx.lineTo(left + 31, y + basket.height - 3);
+                ctx.moveTo(x, y + 21);
+                ctx.lineTo(x, y + basket.height - 2);
+                ctx.moveTo(right - 20, y + 23);
+                ctx.lineTo(right - 31, y + basket.height - 3);
+                ctx.stroke();
+
+                ctx.strokeStyle = "#74411f";
                 ctx.lineWidth = 3;
-                for (let stripe = -1; stripe <= 1; stripe++) {
-                    const stripeX = x + stripe * 24;
-                    ctx.beginPath();
-                    ctx.moveTo(stripeX - 7, y + 13);
-                    ctx.lineTo(stripeX - 4, y + basket.height - 2);
-                    ctx.stroke();
-                }
+                ctx.beginPath();
+                ctx.moveTo(left + 25, y + basket.height);
+                ctx.lineTo(right - 25, y + basket.height);
+                ctx.stroke();
             }
 
             function draw() {
                 if (!ctx) return;
                 ctx.clearRect(0, 0, width, height);
                 drawBackground();
+                drawBasketBody();
+                drawBasketContents();
                 bananas.forEach(drawBanana);
-                drawBasket();
+                drawBasketDetails();
             }
 
             function update(delta) {
@@ -523,21 +629,24 @@
                 for (let index = bananas.length - 1; index >= 0; index--) {
                     const banana = bananas[index];
                     if (banana.caught) {
-                        banana.y += 150 * delta;
+                        banana.y += 205 * delta;
                         banana.catchTime += delta;
-                        if (banana.catchTime >= .3) bananas.splice(index, 1);
+                        if (banana.catchTime >= .4) {
+                            caughtTypes.push(banana.type);
+                            bananas.splice(index, 1);
+                        }
                         continue;
                     }
 
                     banana.y += banana.speed * delta;
 
-                    const basketTop = basket.y + 4;
-                    if (banana.y >= basketTop && banana.y <= basket.y + basket.height
-                        && Math.abs(banana.x - basket.x) < basket.width / 2 + 5) {
+                    const basketTop = basket.y + 10;
+                    if (banana.y + 27 >= basketTop && banana.y <= basket.y + basket.height
+                        && Math.abs(banana.x - basket.x) < basket.width * .42) {
                         setScore(score + banana.type.points);
                         banana.caught = true;
                         banana.catchTime = 0;
-                    } else if (banana.y > height + 24) {
+                    } else if (banana.y > height + 40) {
                         bananas.splice(index, 1);
                     }
                 }
