@@ -14,13 +14,11 @@
             min-height: 100vh;
             box-sizing: border-box;
             margin: 0;
-            padding: 28px 20px;
-            border: 0;
-            border-radius: 0;
-            background:
-                radial-gradient(ellipse at 50% 0, rgba(151, 196, 74, .22), transparent 50%),
-                #173d2b;
-            color: #fff9d6;
+            padding: 10px;
+            border: 30px solid rgb(226, 226, 12);
+            border-radius: 20px;
+            background-color: #2C5F34;
+            color: rgb(229, 229, 85);
             font-family: "Patrick Hand", cursive;
         }
 
@@ -28,6 +26,17 @@
         .game-page *::before,
         .game-page *::after {
             box-sizing: border-box;
+        }
+
+        .game-page .topline,
+        .game-page .scoreboard,
+        .game-page .score-card,
+        .game-page .controls,
+        .game-page .touch-controls {
+            border: 0;
+            border-radius: 0;
+            padding: 0;
+            margin: 0;
         }
 
         .game-page .game-shell {
@@ -44,30 +53,29 @@
         }
 
         .game-page .home-link {
-            color: #f5e86a;
+            color: rgb(229, 229, 85);
             font-size: 19px;
             text-decoration: none;
         }
 
         .game-page .home-link:hover {
-            color: #fff6a2;
+            color: yellow;
             text-decoration: underline;
         }
 
         .game-page h1 {
             margin: 0;
-            color: #ffe96b;
+            color: yellow;
             font-size: clamp(36px, 7vw, 58px);
             line-height: 1;
             text-align: center;
-            text-decoration: none;
-            text-shadow: 0 3px 0 #9c7628;
+            text-decoration: underline;
         }
 
         .game-page .subtitle {
             width: auto;
             margin: 9px 0 20px;
-            color: #d7e8ba;
+            color: rgb(229, 229, 85);
             font-size: 19px;
             text-align: center;
         }
@@ -77,28 +85,28 @@
             justify-content: center;
             flex-wrap: wrap;
             gap: 12px;
-            margin-bottom: 12px;
+            margin: 0 0 12px;
         }
 
         .game-page .score-card {
             min-width: 115px;
             padding: 7px 18px;
-            border: 1px solid rgba(255, 237, 129, .35);
+            border: 2px solid rgb(214, 214, 80);
             border-radius: 14px;
-            background: rgba(13, 45, 31, .75);
+            background: #234e2d;
             text-align: center;
         }
 
         .game-page .score-label {
             display: block;
-            color: #d4e4c2;
+            color: rgb(229, 229, 85);
             font-size: 15px;
             line-height: 1.1;
         }
 
         .game-page .score-value {
             display: block;
-            color: #ffe96b;
+            color: yellow;
             font-size: 27px;
             line-height: 1.15;
         }
@@ -106,10 +114,9 @@
         .game-page .stage {
             position: relative;
             overflow: hidden;
-            border: 4px solid #e8c94e;
+            border: 4px solid rgb(226, 226, 12);
             border-radius: 20px;
             background: #75bf72;
-            box-shadow: 0 12px 30px rgba(0, 0, 0, .28);
         }
 
         .game-page canvas {
@@ -126,7 +133,7 @@
             place-content: center;
             justify-items: center;
             padding: 20px;
-            background: rgba(16, 49, 33, .77);
+            background: rgba(28, 79, 42, .78);
             text-align: center;
         }
 
@@ -136,7 +143,7 @@
 
         .game-page .overlay h2 {
             margin: 0 0 6px;
-            color: #ffe96b;
+            color: yellow;
             font-size: clamp(30px, 6vw, 46px);
             text-decoration: none;
         }
@@ -145,7 +152,7 @@
             width: auto;
             max-width: 380px;
             margin: 0 0 17px;
-            color: #fff9d6;
+            color: rgb(229, 229, 85);
             font-size: 19px;
         }
 
@@ -155,10 +162,10 @@
             height: auto;
             margin: 0;
             padding: 8px 23px;
-            border: 2px solid #fff3a4;
+            border: 2px solid rgb(214, 214, 80);
             border-radius: 12px;
-            background: #ffe45c;
-            color: #21442a;
+            background: yellow;
+            color: #2C5F34;
             font: inherit;
             font-size: 20px;
             font-weight: bold;
@@ -168,7 +175,7 @@
         .game-page button:hover {
             width: auto;
             height: auto;
-            background: #fff092;
+            background: rgb(204, 204, 17);
             transform: translateY(-2px);
             cursor: pointer;
         }
@@ -185,7 +192,7 @@
             justify-content: space-between;
             gap: 12px;
             margin: 13px 2px 18px;
-            color: #d7e8ba;
+            color: rgb(229, 229, 85);
             font-size: 17px;
         }
 
@@ -202,14 +209,14 @@
 
         .game-page .legend {
             padding: 16px 18px;
-            border: 1px solid rgba(255, 237, 129, .25);
+            border: 3px solid rgb(214, 214, 80);
             border-radius: 16px;
-            background: rgba(13, 45, 31, .65);
+            background: #234e2d;
         }
 
         .game-page .legend h2 {
             margin: 0 0 10px;
-            color: #ffe96b;
+            color: rgb(226, 226, 12);
             font-size: 24px;
             text-decoration: none;
         }
@@ -224,17 +231,18 @@
         }
 
         .game-page .banana-list li {
-            color: #f2f0d1;
+            color: rgb(229, 229, 85);
             font-size: 17px;
         }
 
         .game-page .banana-list strong {
-            color: #ffe96b;
+            color: yellow;
         }
 
         @media (max-width: 520px) {
             body.game-page {
-                padding: 20px 12px;
+                padding: 10px;
+                border-width: 16px;
             }
 
             .game-page .topline {
@@ -264,7 +272,7 @@
             <span aria-hidden="true">🍌</span>
         </div>
         <h1>Banana Catcher</h1>
-        <p class="subtitle">Catch the falling bananas. Watch out for the rare ones!</p>
+        <p class="subtitle">Catch as many falling bananas as you can in 30 seconds!</p>
 
         <section class="scoreboard" aria-label="Game stats">
             <div class="score-card">
@@ -272,8 +280,8 @@
                 <span class="score-value" id="score" aria-live="polite">0</span>
             </div>
             <div class="score-card">
-                <span class="score-label">LIVES</span>
-                <span class="score-value" id="lives" aria-live="polite">❤️❤️❤️</span>
+            <span class="score-label">TIME</span>
+            <span class="score-value" id="timer" aria-live="polite">30</span>
             </div>
         </section>
 
@@ -281,7 +289,7 @@
             <canvas id="game-canvas" width="760" height="420" aria-label="Game field. Move the bucket to catch falling bananas."></canvas>
             <div class="overlay" id="overlay">
                 <h2 id="overlay-title">Ready to catch?</h2>
-                <p id="overlay-message">Move your bucket and catch as many bananas as you can!</p>
+                <p id="overlay-message">You have 30 seconds to catch bananas and rack up points!</p>
                 <button id="start-button" type="button">Start game</button>
             </div>
         </section>
@@ -312,13 +320,14 @@
             const canvas = document.getElementById("game-canvas");
             const ctx = canvas.getContext("2d");
             const scoreDisplay = document.getElementById("score");
-            const livesDisplay = document.getElementById("lives");
+            const timerDisplay = document.getElementById("timer");
             const overlay = document.getElementById("overlay");
             const overlayTitle = document.getElementById("overlay-title");
             const overlayMessage = document.getElementById("overlay-message");
             const startButton = document.getElementById("start-button");
             const width = 760;
             const height = 420;
+            const roundLength = 30;
             const basket = { x: width / 2, y: height - 46, width: 100, height: 48, speed: 440 };
             const bananaTypes = [
                 { name: "Banana", points: 5, color: "#ffe45c", chance: 58, emoji: "🍌" },
@@ -330,7 +339,6 @@
             ];
             let bananas = [];
             let score = 0;
-            let lives = 3;
             let state = "ready";
             let lastTime = 0;
             let spawnTimer = 0;
@@ -372,11 +380,6 @@
                 scoreDisplay.textContent = score;
             }
 
-            function setLives(value) {
-                lives = value;
-                livesDisplay.textContent = "❤️".repeat(lives) + "🖤".repeat(3 - lives);
-            }
-
             function startGame() {
                 bananas = [];
                 elapsed = 0;
@@ -384,7 +387,7 @@
                 moveDirection = 0;
                 basket.x = width / 2;
                 setScore(0);
-                setLives(3);
+                timerDisplay.textContent = roundLength;
                 state = "playing";
                 overlay.hidden = true;
                 lastTime = performance.now();
@@ -392,8 +395,8 @@
 
             function endGame() {
                 state = "over";
-                overlayTitle.textContent = "Game over!";
-                overlayMessage.textContent = `You scored ${score} points. Ready for another round?`;
+                overlayTitle.textContent = "Time's up!";
+                overlayMessage.textContent = `You scored ${score} points. Ready to try for a new high score?`;
                 startButton.textContent = "Play again";
                 overlay.hidden = false;
             }
@@ -500,6 +503,13 @@
             function update(delta) {
                 if (state !== "playing") return;
                 elapsed += delta;
+                const timeLeft = Math.max(0, roundLength - Math.floor(elapsed));
+                timerDisplay.textContent = timeLeft;
+                if (elapsed >= roundLength) {
+                    endGame();
+                    return;
+                }
+
                 basket.x += moveDirection * basket.speed * delta;
                 basket.x = Math.max(basket.width / 2, Math.min(width - basket.width / 2, basket.x));
 
@@ -512,20 +522,23 @@
 
                 for (let index = bananas.length - 1; index >= 0; index--) {
                     const banana = bananas[index];
+                    if (banana.caught) {
+                        banana.y += 150 * delta;
+                        banana.catchTime += delta;
+                        if (banana.catchTime >= .3) bananas.splice(index, 1);
+                        continue;
+                    }
+
                     banana.y += banana.speed * delta;
 
                     const basketTop = basket.y + 4;
                     if (banana.y >= basketTop && banana.y <= basket.y + basket.height
                         && Math.abs(banana.x - basket.x) < basket.width / 2 + 5) {
                         setScore(score + banana.type.points);
-                        bananas.splice(index, 1);
+                        banana.caught = true;
+                        banana.catchTime = 0;
                     } else if (banana.y > height + 24) {
                         bananas.splice(index, 1);
-                        setLives(lives - 1);
-                        if (lives === 0) {
-                            endGame();
-                            break;
-                        }
                     }
                 }
             }
